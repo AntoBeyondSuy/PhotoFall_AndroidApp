@@ -46,15 +46,12 @@ public class MainActivity extends AppCompatActivity
 
     final private String[] INTERNET_PER = {Manifest.permission.INTERNET};
 
-    private TextView mTextMessage;
     RecyclerView recView;
-    private BottomNavigationView bottomNavigationView;
     private FragmentMain fragmentMain;
     private FragmentSearch fragmentSearch;
     private FragmentMy fragmentMy;
     private Fragment[] fragments;
     private int lastFragment;       // 用于记录上个选择的Fragment
-
 
     /**
      * 在这里设置点击每个 navigation 的 item 之后的跳转
@@ -100,7 +97,6 @@ public class MainActivity extends AppCompatActivity
             ActivityCompat.requestPermissions(MainActivity.this, INTERNET_PER, 3210);
         }
 
-        mTextMessage = findViewById(R.id.message);
         recView = findViewById(R.id.recyclerView);
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -123,15 +119,14 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * 切换 Fragment
-     * @param lastfragment 此时（切换前）所在的fragment编号
+     * @param lastFragment 此时（切换前）所在的fragment编号
      * @param index 目的fragment编号
      */
-    private void switchFragment(int lastfragment, int index) {
+    private void switchFragment(int lastFragment, int index) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.hide(fragments[lastfragment]);//隐藏上个Fragment
+        transaction.hide(fragments[lastFragment]);      // 隐藏上个Fragment
         if (!fragments[index].isAdded()) {
-
-            transaction.add(R.id.message, fragments[index]);
+            transaction.add(R.id.mainLinearView, fragments[index]);
             // transaction.add(R.id.mainview,com.beyond.photofall.fragments[index]);
         }
         transaction.show(fragments[index]).commitAllowingStateLoss();

@@ -73,14 +73,8 @@ public class FragmentMy extends Fragment {
         txtView = view.findViewById(R.id.myTextView);
         txtView.setText("我的界面");
 //        showPhotosInRecview(recView);
+//        showMyInView();
         return inflater.inflate(R.layout.fragment_my, container, false);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentMyInteraction(uri);
-        }
     }
 
     @Override
