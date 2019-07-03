@@ -3,6 +3,7 @@ package com.beyond.photofall;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -33,7 +34,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FragmentMain.OnFragmentInteractionListener {
     final static String REQUEST_URL = "https://api.unsplash.com/photos/";
     final static String ACCESS_KEY = "?client_id=7dbd22e90f148d7173b6632d4857a68cc414362cadfdd6de721eb916600cdbb7";
     String QUERY = "search/photos?query=";  // eg:query=minimal
@@ -47,25 +48,27 @@ public class MainActivity extends AppCompatActivity {
     RecyAdapter recyAdapter;
     ArrayList<RecItem> recItems;
     private BottomNavigationView bottomNavigationView;
-    private FragmentMain fragmentMain;
+/*    private FragmentMain fragmentMain;
     private FragmentSearch fragmentSearch;
-    private FragmentMy fragmentMy;
+    private FragmentMy fragmentMy;*/
     private Fragment[] fragments;
     private int lastFragment;       // 用于记录上个选择的Fragment
 
 
-    // 在这里设置点击每个 navigation 的 item 之后的跳转
+    /**
+     * 在这里设置点击每个 navigation 的 item 之后的跳转
+     */
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
         switch (item.getItemId()) {
             case R.id.navigation_home:
-//                Intent intent = new Intent(this, MainActivity.this);
-//                startActivity(intent);
                 if (lastFragment != 0) {
-                    switchFragment(lastFragment, 0);
+                    FragmentMain fragmentMain = FragmentMain.newInstance();
+                    switchFragment(lastFragment, fragmentMain);
+//                    switchFragment(lastFragment, 0);
                     lastFragment = 0;
                 }
-                // enterMain(recView);
+                // showPhotosInRecview(recView);
                 return true;
             case R.id.navigation_dashboard:
 //                mTextMessage.setText(R.string.title_dashboard);
@@ -95,26 +98,24 @@ public class MainActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, INTERNET_PER, 3210);
         }
-
-
         FragmentMain fragmentMain = new FragmentMain();
         FragmentSearch fragmentSearch = new FragmentSearch();
         FragmentMy fragmentMy = new FragmentMy();
         Fragment[] fragments = {fragmentMain, fragmentSearch, fragmentMy};
         lastFragment = 0;
         // 初始化主页Fragment
-        getSupportFragmentManager().beginTransaction().replace(R.id.recyclerView, fragmentMain).show(fragmentMain).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.mainLinearView, fragmentMain).show(fragmentMain).commit();
 
         mTextMessage = findViewById(R.id.message);
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        StaggeredGridLayoutManager sgLayoutManager =
-                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+/*        StaggeredGridLayoutManager sgLayoutManager =
+                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);*/
 
-        recView = findViewById(R.id.recyclerView);
+        /*recView = findViewById(R.id.recyclerView);
         recView.setLayoutManager(sgLayoutManager);
 
-        enterMain(recView);
+        showPhotosInRecview(recView);*/
     }
 
     // 切换 Fragment
@@ -122,13 +123,43 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.hide(fragments[lastfragment]);//隐藏上个Fragment
         if (!fragments[index].isAdded()) {
+
             transaction.add(R.id.message, fragments[index]);
             // transaction.add(R.id.mainview,com.beyond.photofall.fragments[index]);
         }
         transaction.show(fragments[index]).commitAllowingStateLoss();
     }
+    private void switchFragment(int lastfragment, Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.hide(fragments[lastfragment]);//隐藏上个Fragment
+        if (!fragment.isAdded()) {
 
+            transaction.add(R.id.message, fragment);
+            // transaction.add(R.id.mainview,com.beyond.photofall.fragments[index]);
+        }
+        transaction.show(fragment).commitAllowingStateLoss();
+    }
 
+    /**
+     * 实现系统权限管理
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 3210:
+                if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(MainActivity.this, "拒绝权限将无法使用程序", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * No usage here; moved to com.beyond.photofall.fragments.FragmentMain
+     */
     public void enterMain(RecyclerView recView) {
         Handler mHandler = new Handler() {
             @Override
@@ -160,57 +191,12 @@ public class MainActivity extends AppCompatActivity {
 //                new getImgFromUrlThread(ri, okHttpClient, recView).start();
 //            new getImgFromUrlThread(ri, okHttpClient, handler, recView).start();
 //            }   // end of for-loop
-        }).start();
-    }
-
-    public void enterSearch(RecyclerView recView) {
-        Handler mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case 0:
-//                    jsonResponse = (Response) msg.obj;
-                        recView.setAdapter(recyAdapter);    // 设置适配器
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
-        OkHttpClient okHttpClient = new OkHttpClient();
-        new Thread(() -> {
-            try {
-                recItems = jsonParser(getData(okHttpClient));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            recyAdapter = new RecyAdapter(MainActivity.this, recItems);
-            mHandler.sendEmptyMessage(0);
-        }).start();
-    }
-
-    /**
-     * 实现系统权限管理
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 3210:
-                if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(MainActivity.this, "拒绝权限将无法使用程序", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-                break;
-            default:
-                break;
-        }
+            }).start();
     }
 
     /**
      * 解析 String 类型的 JSON 数据，获取图片URL和对应的作者名，保存为一个 RecItem 并加入 ArrayList
-     *
+     * No usage here; moved to com.beyond.photofall.fragments.FragmentMain
      * @param jsonString 被解析的 JSON
      * @return 返回保存 RecItem 的 ArrayList
      */
@@ -246,6 +232,12 @@ public class MainActivity extends AppCompatActivity {
         return recItems;
     }
 
+    /**
+     * No usage here; moved to com.beyond.photofall.fragments.FragmentMain
+     * @param okHttpClient
+     * @return
+     * @throws IOException
+     */
     private String getData(OkHttpClient okHttpClient) throws IOException {
         Request jsonRequest = new Request.Builder().url(REQUEST_URL + ACCESS_KEY).build();
         Response jsonResponse = okHttpClient.newCall(jsonRequest).execute();
@@ -253,4 +245,8 @@ public class MainActivity extends AppCompatActivity {
         return jsonResponse.body().string();
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }

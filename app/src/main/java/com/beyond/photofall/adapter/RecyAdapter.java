@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import java.util.List;
 public class RecyAdapter extends RecyclerView.Adapter {
 
     private Context cContext;
+    private Fragment fragment;
     private Bitmap bitmap;
     private InputStream in;
     private List<RecItem> itemList;
@@ -40,6 +42,10 @@ public class RecyAdapter extends RecyclerView.Adapter {
      */
     public RecyAdapter(Context context, List<RecItem> recItems) {
         this.cContext = context;
+        this.itemList = recItems;
+    }
+    public RecyAdapter(Fragment fragment, List<RecItem> recItems) {
+        this.fragment = fragment;
         this.itemList = recItems;
     }
 
