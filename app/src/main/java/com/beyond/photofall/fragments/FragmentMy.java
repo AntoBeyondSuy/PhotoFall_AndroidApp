@@ -70,11 +70,10 @@ public class FragmentMy extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my, container, false);
-        txtView = view.findViewById(R.id.myTextView);
-        txtView.setText("我的界面");
-//        showPhotosInRecview(recView);
+//        txtView = view.findViewById(R.id.myTextView);
+//        txtView.setText("我的界面");
 //        showMyInView();
-        return inflater.inflate(R.layout.fragment_my, container, false);
+        return view;
     }
 
     @Override
