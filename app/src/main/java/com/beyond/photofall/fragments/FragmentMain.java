@@ -1,5 +1,6 @@
 package com.beyond.photofall.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,17 +43,15 @@ import okhttp3.Response;
 public class FragmentMain extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private Context context;
 
     private final static String REQUEST_URL = "https://api.unsplash.com/photos/";
     private final static String ACCESS_KEY = "?client_id=7dbd22e90f148d7173b6632d4857a68cc414362cadfdd6de721eb916600cdbb7";
-    private String QUERY = "search/photos?query=";  // eg:query=minimal
     private final static String QUALITY = "thumb";  // high to low: raw, full, regular, small, thumb
     private final static String USER_PARAM = "name";
 
-    RecyclerView recView;
-    RecyAdapter recyAdapter;
-    ArrayList<RecItem> recItems;
+    private RecyclerView recView;
+    private RecyAdapter recyAdapter;
+    private ArrayList<RecItem> recItems;
 
     // TODO: Rename and change types of parameters
 
@@ -76,33 +75,23 @@ public class FragmentMain extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-/*
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }*/
     }
 
     /**
      * onCreate operations here !
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        recView = view.findViewById(R.id.recyclerView);
         StaggeredGridLayoutManager sgLayoutManager =
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        FragmentActivity activity = getActivity();
-        recView = activity.findViewById(R.id.recyclerView);
+//        recView = getActivity().findViewById(R.id.recyclerView);
         recView.setLayoutManager(sgLayoutManager);
-
         showPhotosInRecview(recView);
-
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        return view;
     }
 
     @Override
@@ -139,12 +128,11 @@ public class FragmentMain extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentMainInteraction(Uri uri);
     }
 
-
     public void showPhotosInRecview(RecyclerView recView) {
-        Handler mHandler = new Handler() {
+        @SuppressLint("HandlerLeak") Handler mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
