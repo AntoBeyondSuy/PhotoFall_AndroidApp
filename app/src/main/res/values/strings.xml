@@ -1,13 +1,15 @@
 <resources>
     <string name="app_name">PhotoFalls</string>
-    <string name="title_home">主页</string>
-    <string name="title_dashboard">搜索</string>
-    <string name="title_notifications">我的</string>
+    <string name="title_new">NEW</string>
+    <string name="title_search">SEARCH</string>
+    <string name="title_mine">MINE</string>
     <string name="photographer">photoGrapher</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="userName">涉影人</string>
     <string name="myDesc">摄影爱好者</string>
+    <string name="searchHint">Please Enter keywords...</string>
+    <string name="search">Search</string>
 
 </resources>

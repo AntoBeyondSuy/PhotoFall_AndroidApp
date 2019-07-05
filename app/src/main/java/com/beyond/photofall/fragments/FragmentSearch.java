@@ -1,12 +1,16 @@
 package com.beyond.photofall.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.beyond.photofall.R;
 
@@ -29,6 +33,7 @@ public class FragmentSearch extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private Activity mActivity;
 
     public FragmentSearch() {
         // Required empty public constructor
@@ -62,22 +67,23 @@ public class FragmentSearch extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_search, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void searchBtn(View view) {
         if (mListener != null) {
-            mListener.onFragmentSearchInteraction(uri);
+            mListener.onFragmentSearchInteraction(view);
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mActivity = (Activity) context;
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -104,6 +110,6 @@ public class FragmentSearch extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentSearchInteraction(Uri uri);
+        void onFragmentSearchInteraction(View view);
     }
 }

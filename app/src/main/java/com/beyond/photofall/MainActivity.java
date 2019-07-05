@@ -1,12 +1,9 @@
 package com.beyond.photofall;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -15,43 +12,32 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.beyond.photofall.fragments.FragmentMain;
 import com.beyond.photofall.fragments.FragmentMy;
 import com.beyond.photofall.fragments.FragmentSearch;
-import com.google.gson.*;
-
-import com.beyond.photofall.adapter.RecyAdapter;
-import com.beyond.photofall.entity.RecItem;
-
-import java.io.IOException;
-import java.util.ArrayList;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity
         implements FragmentMain.OnFragmentInteractionListener,
                     FragmentSearch.OnFragmentInteractionListener,
                     FragmentMy.OnFragmentInteractionListener {
-    final static String REQUEST_URL = "https://api.unsplash.com/photos/";
-    final static String ACCESS_KEY = "?client_id=7dbd22e90f148d7173b6632d4857a68cc414362cadfdd6de721eb916600cdbb7";
-    String QUERY = "search/photos?query=";  // eg:query=minimal
-    final static String QUALITY = "thumb";  // high to low: raw, full, regular, small, thumb
-    final static String USER_PARAM = "name";
 
     final private String[] INTERNET_PER = {Manifest.permission.INTERNET};
 
     RecyclerView recView;
     private FragmentMain fragmentMain;
+    private FragmentMain fragmentSearchResult;
     private FragmentSearch fragmentSearch;
     private FragmentMy fragmentMy;
     private Fragment[] fragments;
     private int lastFragment;       // 用于记录上个选择的Fragment
+
+    private EditText txtKeyword;
+    private Button btnSearch;
 
     /**
      * 在这里设置点击每个 navigation 的 item 之后的跳转
@@ -59,7 +45,7 @@ public class MainActivity extends AppCompatActivity
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
         switch (item.getItemId()) {
-            case R.id.navigation_home:
+            case R.id.navigation_new:
                 if (lastFragment != 0) {
 //                    FragmentMain fragmentMain = FragmentMain.newInstance();
                     switchFragment(lastFragment, 0);
@@ -68,14 +54,14 @@ public class MainActivity extends AppCompatActivity
                 }
                 // showPhotosInRecview(recView);
                 return true;
-            case R.id.navigation_dashboard:
+            case R.id.navigation_search:
 //                mTextMessage.setText(R.string.title_dashboard);
                 if (lastFragment != 1) {
                     switchFragment(lastFragment, 1);
                     lastFragment = 1;
                 }
                 return true;
-            case R.id.navigation_notifications:
+            case R.id.navigation_mine:
 //                mTextMessage.setText(R.string.title_notifications);
                 if (lastFragment != 2) {
                     switchFragment(lastFragment, 2);
@@ -125,6 +111,7 @@ public class MainActivity extends AppCompatActivity
     private void switchFragment(int lastFragment, int index) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.hide(fragments[lastFragment]);      // 隐藏上个Fragment
+        if (fragmentSearchResult!=null) transaction.hide(fragmentSearchResult);
         if (!fragments[index].isAdded()) {
             transaction.add(R.id.mainLinearView, fragments[index]);
             // transaction.add(R.id.mainview,com.beyond.photofall.fragments[index]);
@@ -149,13 +136,33 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void searchBtn(View view) {
+        txtKeyword = findViewById(R.id.searchKeyword);
+        String keyword = txtKeyword.getText().toString();
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.hide(fragments[lastFragment]);      // 隐藏上个Fragment
+
+        fragmentSearchResult = FragmentMain.newInstance(keyword);
+        transaction.replace(R.id.mainLinearView, fragmentSearchResult);
+        transaction.show(fragmentSearchResult).commitAllowingStateLoss();
+
+        lastFragment = 1;
+
+//        btnSearch.setText(keyword);
+    }
+
+    /**
+     * 实现三个Fragment类的接口
+     * @param uri realization
+     */
     @Override
     public void onFragmentMainInteraction(Uri uri) {
 
     }
 
     @Override
-    public void onFragmentSearchInteraction(Uri uri) {
+    public void onFragmentSearchInteraction(View view) {
 
     }
 

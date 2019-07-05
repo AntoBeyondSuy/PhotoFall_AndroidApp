@@ -6,9 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -43,15 +43,18 @@ import okhttp3.Response;
 public class FragmentMain extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String SEARCH_KEYWORD = "keyword";
 
-    private final static String REQUEST_URL = "https://api.unsplash.com/photos/";
-    private final static String ACCESS_KEY = "?client_id=7dbd22e90f148d7173b6632d4857a68cc414362cadfdd6de721eb916600cdbb7";
+    private final static String REQUEST_URL = "https://api.unsplash.com/";
+    private final static String ACCESS_KEY = "client_id=7dbd22e90f148d7173b6632d4857a68cc414362cadfdd6de721eb916600cdbb7";
     private final static String QUALITY = "thumb";  // high to low: raw, full, regular, small, thumb
     private final static String USER_PARAM = "name";
+    String QUERY = "search/photos?query=";  // eg:query=minimal
 
     private RecyclerView recView;
     private RecyAdapter recyAdapter;
     private ArrayList<RecItem> recItems;
+    private String mKeyword;
 
     // TODO: Rename and change types of parameters
 
@@ -68,20 +71,26 @@ public class FragmentMain extends Fragment {
      * @return A new instance of fragment FragmentMain.
      */
     // TODO: Rename and change types and number of parameters
-    public static FragmentMain newInstance() {
-        return new FragmentMain();
+    public static FragmentMain newInstance(String keyword) {
+        FragmentMain fragment = new FragmentMain();
+        Bundle args = new Bundle();
+        args.putString(SEARCH_KEYWORD, keyword);
+//        Log.e("SEARCH_KEYWORD", "newInstance: SEARCH_KEYWORD = "+);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mKeyword = getArguments() != null ? getArguments().getString(SEARCH_KEYWORD) : "";
     }
 
     /**
      * onCreate operations here !
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_main, container, false);
@@ -171,7 +180,12 @@ public class FragmentMain extends Fragment {
             JsonParser parser = new JsonParser();   // 创建JSON解析器
             /* 注意：发送的是获取最新图片的请求，返回的是 JsonArray 对象格式的字符串 */
             // 通过 String 创建 JsonArray 对象
-            JsonArray jsonArray = (JsonArray) parser.parse(jsonString);
+            JsonArray jsonArray;
+            if ("[".equals(jsonString.substring(0, 1))) {
+                jsonArray = (JsonArray) parser.parse(jsonString);
+            } else {
+                jsonArray = parser.parse(jsonString).getAsJsonObject().get("results").getAsJsonArray();
+            }
 
             /* 注意：如果发送的是查询请求而不是获取最新图片的请求，则返回的是 JsonObject 对象格式的字符串 */
             // 通过 String 创建 JsonObject 对象
@@ -196,10 +210,28 @@ public class FragmentMain extends Fragment {
     }
 
     private String getData(OkHttpClient okHttpClient) throws IOException {
-        Request jsonRequest = new Request.Builder().url(REQUEST_URL + ACCESS_KEY).build();
+        Log.e("mKeyword", "newInstance: mKeyword = " + mKeyword);
+        Request jsonRequest;
+        if ("".equals(mKeyword)) {
+            jsonRequest = new Request.Builder().url(REQUEST_URL + "photos?" + ACCESS_KEY).build();
+        } else {
+            jsonRequest = new Request.Builder().url(REQUEST_URL + QUERY + mKeyword + "&" + ACCESS_KEY).build();
+        }
         Response jsonResponse = okHttpClient.newCall(jsonRequest).execute();
-        if (!jsonResponse.isSuccessful()) throw new IOException("Unexpected code " + jsonResponse);
+        if (!jsonResponse.isSuccessful()) throw new
+                IOException("Unexpected code " + jsonResponse);
+        assert jsonResponse.body() != null;
         return jsonResponse.body().string();
     }
+    /*
+    private static final String SEARCH_KEYWORD = "keyword";
+    private final static String REQUEST_URL = "https://api.unsplash.com/";
+    private final static String ACCESS_KEY = "client_id=7dbd22e90f148d7173b6632d4857a68cc414362cadfdd6de721eb916600cdbb7";
+    private final static String QUALITY = "thumb";  // high to low: raw, full, regular, small, thumb
+    private final static String USER_PARAM = "name";
+    String QUERY = "search/photos?query=";  // eg:query=minimal
+    https://api.unsplash.com/search/photos?query=tree&client_id=7dbd22e90f148d7173b6632d4857a68cc414362cadfdd6de721eb916600cdbb7
+    *
+    * */
 
 }

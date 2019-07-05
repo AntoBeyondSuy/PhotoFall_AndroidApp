@@ -15,7 +15,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="Please Enter keywords..."
+        android:hint="@string/searchHint"
         android:inputType="text"
         android:textColor="@android:color/black"
         android:textSize="18sp"
@@ -32,8 +32,10 @@
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:background="@color/colorAccent"
-        android:text="Search"
+        android:onClick="searchBtn"
+        android:text="@string/search"
         android:textColor="@android:color/background_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>
