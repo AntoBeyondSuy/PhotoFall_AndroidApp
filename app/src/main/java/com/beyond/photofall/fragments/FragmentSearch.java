@@ -74,11 +74,12 @@ public class FragmentSearch extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void searchBtn(View view) {
+    /* moved to MainActivity.java */
+/*    public void searchBtn(View view) {
         if (mListener != null) {
             mListener.onFragmentSearchInteraction(view);
         }
-    }
+    }*/
 
     @Override
     public void onAttach(Context context) {

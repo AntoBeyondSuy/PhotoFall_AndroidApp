@@ -1,5 +1,6 @@
 package com.beyond.photofall.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,14 +38,12 @@ public class RecyAdapter extends RecyclerView.Adapter {
 
     /**
      * 把要展示的数据源传入，并赋值给全局变量 itemList
-     *
-     * @param context
-     * @param recItems
      */
     public RecyAdapter(Context context, List<RecItem> recItems) {
         this.cContext = context;
         this.itemList = recItems;
     }
+
     public RecyAdapter(Fragment fragment, List<RecItem> recItems) {
         this.fragment = fragment;
         this.itemList = recItems;
@@ -53,8 +53,6 @@ public class RecyAdapter extends RecyclerView.Adapter {
     /**
      * 创建ViewHolder实例，加载recItem布局，传入到构造函数中，并返回ViewHolder实例
      *
-     * @param parent
-     * @param viewType
      * @return ViewHolder实例
      */
     @NonNull
@@ -68,8 +66,7 @@ public class RecyAdapter extends RecyclerView.Adapter {
     /**
      * 对recyclerView子项的数据进行赋值，在每个子项滚动到屏幕内时执行
      *
-     * @param viewHolder
-     * @param position   当前项的 item 实例位置
+     * @param position 当前项的 item 实例位置
      */
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int position) {
@@ -84,9 +81,25 @@ public class RecyAdapter extends RecyclerView.Adapter {
                 super.handleMessage(msg);
                 switch (msg.what) {
                     case 0:
-                        Glide.with(recyViewHolder.itemView).load((Bitmap) msg.obj).into(recyViewHolder.imgView);
-                        //绑定给当前位置上的imageView控件
+/*                        String[] urls = (String[]) msg.obj;
+                        Bitmap imgThumb = null;
+                        Bitmap imgRegular= null;
+                        try {
+                            imgThumb = getBitmapFromURL(urls[0]);
+                            imgRegular = getBitmapFromURL(urls[1]);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }*/
+                        Glide.with(recyViewHolder.itemView).load((Bitmap)msg.obj).into(recyViewHolder.imgView);
+//                        Glide.with(recyViewHolder.itemView).load(imgThumb).into(recyViewHolder.imgView);
+                        // 绑定给当前位置上的imageView控件
                         recyViewHolder.itemView.setTag(position);
+                        /*recyViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String thumbUrl = urls[1];
+                            }
+                        });*/
                         break;
                     default:
                         break;
@@ -96,22 +109,21 @@ public class RecyAdapter extends RecyclerView.Adapter {
 
         new Thread(() -> {
             Message msg = new Message();
+            // obj实际上是一个String数组，0为略缩图URL，1为正常质量图URL
+//            msg.obj = new String[]{recItem.getImgUrlThumb(), recItem.getImgUrlRegular()};
             try {
-                msg.obj = getBitmapFromURL(recItem.getImgURL());
-                mHandler.sendMessage(msg);
+                msg.obj = getBitmapFromURL(recItem.getImgUrlThumb());
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            mHandler.sendMessage(msg);
         }).start();
     }
 
 
+
     /**
      * 通过指向图片的 url 获取二进制 response 并转换为 bitmap 对象
-     *
-     * @param urlPath
-     * @return
-     * @throws IOException
      */
     private Bitmap getBitmapFromURL(String urlPath) throws IOException {
 
@@ -134,6 +146,9 @@ public class RecyAdapter extends RecyclerView.Adapter {
         return itemList.size();
     }
 
+    /**
+     * 静态内部类
+     */
     static class RecyViewHolder extends RecyclerView.ViewHolder {
         private TextView photoGrapher;  // 摄影师名称
         private ImageView imgView;      // 图片

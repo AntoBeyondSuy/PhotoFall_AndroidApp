@@ -3,7 +3,8 @@ package com.beyond.photofall.entity;
 public class RecItem {
 
     private String photoGrapher;
-    private String imgURL;
+    private String imgUrlThumb;
+    private String imgUrlRegular;
     private int NativeImg;
 
     public RecItem(String photoGrapher, int nativeImg) {
@@ -11,9 +12,19 @@ public class RecItem {
         this.NativeImg = nativeImg;
     }
 
-    public RecItem(String photoGrapher, String imgURL) {
+    public RecItem(String photoGrapher, String imgUrl) {
         this.photoGrapher = photoGrapher;
-        this.imgURL = imgURL;
+        this.imgUrlThumb = imgUrl;
+    }
+
+    public RecItem(String photoGrapher, String imgUrlThumb, String imgUrlRegular) {
+        this.photoGrapher = photoGrapher;
+        this.imgUrlThumb = imgUrlThumb;
+        this.imgUrlRegular = imgUrlRegular;
+    }
+
+    public String getImgUrlRegular() {
+        return imgUrlRegular;
     }
 
     public int getNativeImg() {
@@ -24,8 +35,8 @@ public class RecItem {
         return photoGrapher;
     }
 
-    public String getImgURL() {
-        return imgURL;
+    public String getImgUrlThumb() {
+        return imgUrlThumb;
     }
 
 }

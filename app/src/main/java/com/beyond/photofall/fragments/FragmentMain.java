@@ -47,7 +47,8 @@ public class FragmentMain extends Fragment {
 
     private final static String REQUEST_URL = "https://api.unsplash.com/";
     private final static String ACCESS_KEY = "client_id=7dbd22e90f148d7173b6632d4857a68cc414362cadfdd6de721eb916600cdbb7";
-    private final static String QUALITY = "thumb";  // high to low: raw, full, regular, small, thumb
+    private final static String QUALITY_THUMB = "thumb";  // high to low: raw, full, regular, small, thumb
+    private final static String QUALITY_REGULAR = "regular";  // high to low: raw, full, regular, small, thumb
     private final static String USER_PARAM = "name";
     String QUERY = "search/photos?query=";  // eg:query=minimal
 
@@ -83,21 +84,19 @@ public class FragmentMain extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // 获取fragment中的arguments，为搜索关键词 keyword 赋值
         mKeyword = getArguments() != null ? getArguments().getString(SEARCH_KEYWORD) : "";
     }
 
-    /**
-     * onCreate operations here !
-     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_main, container, false);
+//        recView = getActivity().findViewById(R.id.recyclerView);
         recView = view.findViewById(R.id.recyclerView);
         StaggeredGridLayoutManager sgLayoutManager =
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-//        recView = getActivity().findViewById(R.id.recyclerView);
         recView.setLayoutManager(sgLayoutManager);
         showPhotosInRecview(recView);
         return view;
@@ -196,9 +195,12 @@ public class FragmentMain extends Fragment {
             // 遍历 JsonArray 对象，获取每一个图片信息，并提取 URL 和 user 的信息
             for (int i = 0; i < jsonArray.size(); i++) {
                 JsonObject subObject = jsonArray.get(i).getAsJsonObject(); // subObject 是最外层每对 {} 中的内容，第一项是 id
-                String imgUrl = subObject.get("urls").getAsJsonObject().get(QUALITY).getAsString(); // 获取每个组（subObject）中的 urls 组中的 small 的 url，String
+                // 获取每个组（subObject）中的 urls 组中的 thumb（图片质量：略缩图） 的 url，String
+                String imgUrlThumb = subObject.get("urls").getAsJsonObject().get(QUALITY_THUMB).getAsString();
+                // 获取 regular（正常质量）的 url，String
+                String imgUrlRegular = subObject.get("urls").getAsJsonObject().get(QUALITY_REGULAR).getAsString();
                 String imgUserName = subObject.get("user").getAsJsonObject().get(USER_PARAM).getAsString();
-                RecItem ri = new RecItem(imgUserName, imgUrl);
+                RecItem ri = new RecItem(imgUserName, imgUrlThumb, imgUrlRegular);
                 recItems.add(ri);
             }
         } catch (JsonIOException e) {
@@ -227,7 +229,7 @@ public class FragmentMain extends Fragment {
     private static final String SEARCH_KEYWORD = "keyword";
     private final static String REQUEST_URL = "https://api.unsplash.com/";
     private final static String ACCESS_KEY = "client_id=7dbd22e90f148d7173b6632d4857a68cc414362cadfdd6de721eb916600cdbb7";
-    private final static String QUALITY = "thumb";  // high to low: raw, full, regular, small, thumb
+    private final static String QUALITY_THUMB = "thumb";  // high to low: raw, full, regular, small, thumb
     private final static String USER_PARAM = "name";
     String QUERY = "search/photos?query=";  // eg:query=minimal
     https://api.unsplash.com/search/photos?query=tree&client_id=7dbd22e90f148d7173b6632d4857a68cc414362cadfdd6de721eb916600cdbb7

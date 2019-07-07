@@ -47,22 +47,17 @@ public class MainActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.navigation_new:
                 if (lastFragment != 0) {
-//                    FragmentMain fragmentMain = FragmentMain.newInstance();
                     switchFragment(lastFragment, 0);
-//                    switchFragment(lastFragment, 0);
                     lastFragment = 0;
                 }
-                // showPhotosInRecview(recView);
                 return true;
             case R.id.navigation_search:
-//                mTextMessage.setText(R.string.title_dashboard);
                 if (lastFragment != 1) {
                     switchFragment(lastFragment, 1);
                     lastFragment = 1;
                 }
                 return true;
             case R.id.navigation_mine:
-//                mTextMessage.setText(R.string.title_notifications);
                 if (lastFragment != 2) {
                     switchFragment(lastFragment, 2);
                     lastFragment = 2;
@@ -94,13 +89,7 @@ public class MainActivity extends AppCompatActivity
         lastFragment = 0;
         // 初始化主页Fragment
         getSupportFragmentManager().beginTransaction().replace(R.id.mainLinearView, fragmentMain).show(fragmentMain).commit();
-/*        StaggeredGridLayoutManager sgLayoutManager =
-                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);*/
 
-        /*recView = findViewById(R.id.recyclerView);
-        recView.setLayoutManager(sgLayoutManager);
-
-        showPhotosInRecview(recView);*/
     }
 
     /**
@@ -136,6 +125,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * 点击搜索按纽，获取输入内容，用之实例化FragmentMain，并切换
+     * @param view 此时的视图
+     */
     public void searchBtn(View view) {
         txtKeyword = findViewById(R.id.searchKeyword);
         String keyword = txtKeyword.getText().toString();
@@ -148,7 +141,6 @@ public class MainActivity extends AppCompatActivity
         transaction.show(fragmentSearchResult).commitAllowingStateLoss();
 
         lastFragment = 1;
-
 //        btnSearch.setText(keyword);
     }
 
