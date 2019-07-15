@@ -9,6 +9,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -53,6 +54,7 @@ public class FragmentMain extends Fragment {
     String QUERY = "search/photos?query=";  // eg:query=minimal
 
     private RecyclerView recView;
+    private ViewPager detailView;
     private RecyAdapter recyAdapter;
     private ArrayList<RecItem> recItems;
     private String mKeyword;
@@ -95,10 +97,11 @@ public class FragmentMain extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 //        recView = getActivity().findViewById(R.id.recyclerView);
         recView = view.findViewById(R.id.recyclerView);
+        detailView = view.findViewById(R.id.detailView);
         StaggeredGridLayoutManager sgLayoutManager =
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recView.setLayoutManager(sgLayoutManager);
-        showPhotosInRecview(recView);
+        showPhotosInRecview(recView, detailView);
         return view;
     }
 
@@ -139,7 +142,7 @@ public class FragmentMain extends Fragment {
         void onFragmentMainInteraction(Uri uri);
     }
 
-    public void showPhotosInRecview(RecyclerView recView) {
+    public void showPhotosInRecview(RecyclerView recView, ViewPager detailView) {
         @SuppressLint("HandlerLeak") Handler mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -161,7 +164,7 @@ public class FragmentMain extends Fragment {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            recyAdapter = new RecyAdapter(FragmentMain.this, recItems);
+            recyAdapter = new RecyAdapter(FragmentMain.this, recItems, detailView);
             mHandler.sendEmptyMessage(0);
         }).start();
     }
@@ -215,9 +218,9 @@ public class FragmentMain extends Fragment {
         Log.e("mKeyword", "newInstance: mKeyword = " + mKeyword);
         Request jsonRequest;
         if ("".equals(mKeyword)) {
-            jsonRequest = new Request.Builder().url(REQUEST_URL + "photos?" + ACCESS_KEY).build();
+            jsonRequest = new Request.Builder().url(REQUEST_URL + "photos?" + ACCESS_KEY + "&per_page=50").build();
         } else {
-            jsonRequest = new Request.Builder().url(REQUEST_URL + QUERY + mKeyword + "&" + ACCESS_KEY).build();
+            jsonRequest = new Request.Builder().url(REQUEST_URL + QUERY + mKeyword + "&" + ACCESS_KEY + "&per_page=50").build();
         }
         Response jsonResponse = okHttpClient.newCall(jsonRequest).execute();
         if (!jsonResponse.isSuccessful()) throw new
@@ -225,15 +228,6 @@ public class FragmentMain extends Fragment {
         assert jsonResponse.body() != null;
         return jsonResponse.body().string();
     }
-    /*
-    private static final String SEARCH_KEYWORD = "keyword";
-    private final static String REQUEST_URL = "https://api.unsplash.com/";
-    private final static String ACCESS_KEY = "client_id=7dbd22e90f148d7173b6632d4857a68cc414362cadfdd6de721eb916600cdbb7";
-    private final static String QUALITY_THUMB = "thumb";  // high to low: raw, full, regular, small, thumb
-    private final static String USER_PARAM = "name";
-    String QUERY = "search/photos?query=";  // eg:query=minimal
-    https://api.unsplash.com/search/photos?query=tree&client_id=7dbd22e90f148d7173b6632d4857a68cc414362cadfdd6de721eb916600cdbb7
-    *
-    * */
+
 
 }
