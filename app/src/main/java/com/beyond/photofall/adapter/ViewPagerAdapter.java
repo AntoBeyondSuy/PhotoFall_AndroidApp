@@ -8,11 +8,9 @@ import android.support.v4.view.ViewPager.LayoutParams;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
 import com.beyond.photofall.controller.ZoomTutorial;
-import com.bumptech.glide.Glide;
 
 /**
  * 实现滑动展示下一张图片
@@ -31,14 +29,14 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return 0;
+        return 50;
     }
 
     @Override
     public View instantiateItem(ViewGroup container, final int position) {
         final ImageView imageView = new ImageView(mFragment.getContext());
         imageView.setImageBitmap(mRegularPhoto);
-        Log.e("ViewPagerAdapter", "instantiateItem: position = " + position);
+        Log.d("POSITION", "instantiateItem: position = " + position);
         container.addView(imageView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
         imageView.setOnClickListener(view -> mZoomTutorial.closeZoomAnim(position));

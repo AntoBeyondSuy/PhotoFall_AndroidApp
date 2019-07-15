@@ -78,7 +78,6 @@ public class FragmentMain extends Fragment {
         FragmentMain fragment = new FragmentMain();
         Bundle args = new Bundle();
         args.putString(SEARCH_KEYWORD, keyword);
-//        Log.e("SEARCH_KEYWORD", "newInstance: SEARCH_KEYWORD = "+);
         fragment.setArguments(args);
         return fragment;
     }
@@ -215,7 +214,7 @@ public class FragmentMain extends Fragment {
     }
 
     private String getData(OkHttpClient okHttpClient) throws IOException {
-        Log.e("mKeyword", "newInstance: mKeyword = " + mKeyword);
+        Log.d("mKeyword", "newInstance: mKeyword = " + mKeyword);
         Request jsonRequest;
         if ("".equals(mKeyword)) {
             jsonRequest = new Request.Builder().url(REQUEST_URL + "photos?" + ACCESS_KEY + "&per_page=50").build();

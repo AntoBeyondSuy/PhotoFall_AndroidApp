@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,9 +73,8 @@ public class RecyAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
         RecyViewHolder recyViewHolder = (RecyViewHolder) viewHolder;
         RecItem recItem = itemList.get(position);
-//        System.out.println("position = " + position);
         recyViewHolder.photoGrapher.setText(String.format("%s", recItem.getPhotoGrapher()));
-
+        Log.d("POSITION", "onBindViewHolder: position = " + position);
         @SuppressLint("HandlerLeak") Handler mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -113,7 +113,7 @@ public class RecyAdapter extends RecyclerView.Adapter {
     }
 
 
-    public void setViewPagerAndZoom(View thumbView, Bitmap regularPhoto, ViewPager cDetailView, int position) {
+    private void setViewPagerAndZoom(View thumbView, Bitmap regularPhoto, ViewPager cDetailView, int position) {
         // cDetailView: 得到要放大展示的视图界面
         // 最外层的容器，用来计算
         View containerView = cDetailView.getRootView().findViewById(R.id.container);

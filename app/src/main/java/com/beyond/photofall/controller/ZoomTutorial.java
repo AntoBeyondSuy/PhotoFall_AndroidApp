@@ -165,7 +165,7 @@ public class ZoomTutorial {
      * @return 判断这个position的view是否现在显示在屏幕上，如果没有显示就返回false
      */
     public boolean getScaleFinalBounds(int position) {
-        //得到显示区域中第一个子视图的序号
+        // 得到显示区域中第一个子视图的序号
         int firstPosition = ((AdapterView<?>)mThumbViewParent).getFirstVisiblePosition();
         View childView = mThumbViewParent.getChildAt(position - firstPosition);
 
