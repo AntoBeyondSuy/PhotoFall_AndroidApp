@@ -23,8 +23,8 @@ import com.beyond.photofall.fragments.FragmentSearch;
 
 public class MainActivity extends AppCompatActivity
         implements FragmentMain.OnFragmentInteractionListener,
-                    FragmentSearch.OnFragmentInteractionListener,
-                    FragmentMy.OnFragmentInteractionListener {
+        FragmentSearch.OnFragmentInteractionListener,
+        FragmentMy.OnFragmentInteractionListener {
 
     final private String[] INTERNET_PER = {Manifest.permission.INTERNET};
 
@@ -77,6 +77,10 @@ public class MainActivity extends AppCompatActivity
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, INTERNET_PER, 3210);
         }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 4333);
+        }
 
         recView = findViewById(R.id.recyclerView);
         BottomNavigationView navigation = findViewById(R.id.navigation);
@@ -94,13 +98,14 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * 切换 Fragment
+     *
      * @param lastFragment 此时（切换前）所在的fragment编号
-     * @param index 目的fragment编号
+     * @param index        目的fragment编号
      */
     private void switchFragment(int lastFragment, int index) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.hide(fragments[lastFragment]);      // 隐藏上个Fragment
-        if (fragmentSearchResult!=null) transaction.hide(fragmentSearchResult);
+        if (fragmentSearchResult != null) transaction.hide(fragmentSearchResult);
         if (!fragments[index].isAdded()) {
             transaction.add(R.id.mainLinearView, fragments[index]);
             // transaction.add(R.id.mainview,com.beyond.photofall.fragments[index]);
@@ -116,7 +121,13 @@ public class MainActivity extends AppCompatActivity
         switch (requestCode) {
             case 3210:
                 if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(MainActivity.this, "拒绝权限将无法使用程序", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "拒绝网络权限将无法使用程序！", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                break;
+            case 4333:
+                if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(MainActivity.this, "拒绝存储权限将无法保存照片！", Toast.LENGTH_SHORT).show();
                     finish();
                 }
                 break;
@@ -127,6 +138,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * 点击搜索按纽，获取输入内容，用之实例化FragmentMain，并切换
+     *
      * @param view 此时的视图
      */
     public void searchBtn(View view) {
@@ -146,6 +158,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * 实现三个Fragment类的接口
+     *
      * @param uri realization
      */
     @Override
