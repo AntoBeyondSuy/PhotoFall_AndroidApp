@@ -166,8 +166,9 @@ public class ZoomTutorial {
      */
     public boolean getScaleFinalBounds(int position) {
         // 得到显示区域中第一个子视图的序号
-        int firstPosition = ((AdapterView<?>)mThumbViewParent).getFirstVisiblePosition();
-        View childView = mThumbViewParent.getChildAt(position - firstPosition);
+//        int firstPosition = ((AdapterView<?>)mThumbViewParent).getFirstVisiblePosition();
+//        View childView = mThumbViewParent.getChildAt(position - firstPosition);
+        View childView = mThumbViewParent.getChildAt(position);
 
         startBounds = new Rect();
         final Rect finalBounds = new Rect();
