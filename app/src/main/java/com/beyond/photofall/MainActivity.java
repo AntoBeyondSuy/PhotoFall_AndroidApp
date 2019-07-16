@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity
         fragments = new Fragment[]{fragmentMain, fragmentSearch, fragmentMy};
         lastFragment = 0;
         // 初始化主页Fragment
-        getSupportFragmentManager().beginTransaction().replace(R.id.mainLinearView, fragmentMain).show(fragmentMain).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.mainView, fragmentMain).show(fragmentMain).commit();
 
     }
 
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity
         transaction.hide(fragments[lastFragment]);      // 隐藏上个Fragment
         if (fragmentSearchResult != null) transaction.hide(fragmentSearchResult);
         if (!fragments[index].isAdded()) {
-            transaction.add(R.id.mainLinearView, fragments[index]);
+            transaction.add(R.id.mainView, fragments[index]);
             // transaction.add(R.id.mainview,com.beyond.photofall.fragments[index]);
         }
         transaction.show(fragments[index]).commitAllowingStateLoss();
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity
         transaction.hide(fragments[lastFragment]);      // 隐藏上个Fragment
 
         fragmentSearchResult = FragmentMain.newInstance(keyword);
-        transaction.replace(R.id.mainLinearView, fragmentSearchResult);
+        transaction.replace(R.id.mainView, fragmentSearchResult);
         transaction.show(fragmentSearchResult).commitAllowingStateLoss();
 
         lastFragment = 1;

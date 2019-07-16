@@ -94,7 +94,6 @@ public class FragmentMain extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-//        recView = getActivity().findViewById(R.id.recyclerView);
         recView = view.findViewById(R.id.recyclerView);
         detailView = view.findViewById(R.id.detailView);
         StaggeredGridLayoutManager sgLayoutManager =
