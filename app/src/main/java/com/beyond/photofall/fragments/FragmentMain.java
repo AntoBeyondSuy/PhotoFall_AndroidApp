@@ -213,7 +213,7 @@ public class FragmentMain extends Fragment {
     }
 
     private String getData(OkHttpClient okHttpClient) throws IOException {
-        Log.d("mKeyword", "newInstance: mKeyword = " + mKeyword);
+        Log.d("mKeyword", "getData: mKeyword = " + mKeyword);
         Request jsonRequest;
         if ("".equals(mKeyword)) {
             jsonRequest = new Request.Builder().url(REQUEST_URL + "photos?" + ACCESS_KEY + "&per_page=50").build();
